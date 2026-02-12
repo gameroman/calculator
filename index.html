@@ -231,7 +231,13 @@
     </div>
 
     <script type="module">
-      import { calculate } from "https://esm.sh/gh/gameroman/math-parser";
+      const urlParams = new URLSearchParams(window.location.search);
+      const tag = urlParams.get('tag');
+      const importUrl = tag 
+        ? `https://esm.sh/gh/gameroman/math-parser@${tag}` 
+        : "https://esm.sh/gh/gameroman/math-parser";
+
+      const { calculate } = await import(importUrl);
 
       const mainDisplay = document.getElementById("main-display");
       const historyDisplay = document.getElementById("history-display");
@@ -374,3 +380,4 @@
     </script>
   </body>
 </html>
+
