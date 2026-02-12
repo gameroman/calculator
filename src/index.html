@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Math Parser Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      }
+      .calc-button {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .calc-button:active {
+        transform: scale(0.95);
+      }
+      /* Custom styling for the editable input */
+      #main-display {
+        background: transparent;
+        border: none;
+        outline: none;
+        text-align: right;
+        width: 100%;
+        color: white;
+        font-size: 2.25rem;
+        font-weight: 300;
+        letter-spacing: -0.025em;
+      }
+      .display-scroll::-webkit-scrollbar {
+        height: 4px;
+      }
+      .display-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body class="p-4">
+    <div
+      class="glass w-full max-w-md rounded-3xl overflow-hidden p-6 flex flex-col gap-6"
+    >
+      <!-- Display Section -->
+      <div class="flex flex-col gap-1 text-right overflow-hidden">
+        <div
+          id="history-display"
+          class="text-slate-400 text-sm h-6 display-scroll overflow-x-auto whitespace-nowrap"
+        ></div>
+        <!-- Changed to an input to allow direct typing -->
+        <input
+          type="text"
+          id="main-display"
+          value="0"
+          spellcheck="false"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Buttons Grid -->
+      <div class="grid grid-cols-4 gap-3">
+        <!-- Row 1 -->
+        <button
+          onclick="clearAll()"
+          class="calc-button col-span-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-medium py-4 rounded-2xl"
+        >
+          AC
+        </button>
+        <button
+          onclick="appendToken('(')"
+          class="calc-button bg-slate-700/40 hover:bg-slate-700/60 text-slate-300 py-4 rounded-2xl"
+        >
+          (
+        </button>
+        <button
+          onclick="appendToken(')')"
+          class="calc-button bg-slate-700/40 hover:bg-slate-700/60 text-slate-300 py-4 rounded-2xl"
+        >
+          )
+        </button>
+
+        <!-- Row 2 -->
+        <button
+          onclick="appendToken('7')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          7
+        </button>
+        <button
+          onclick="appendToken('8')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          8
+        </button>
+        <button
+          onclick="appendToken('9')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          9
+        </button>
+        <button
+          onclick="appendToken('/')"
+          class="calc-button bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 py-4 rounded-2xl text-xl"
+        >
+          ÷
+        </button>
+
+        <!-- Row 3 -->
+        <button
+          onclick="appendToken('4')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          4
+        </button>
+        <button
+          onclick="appendToken('5')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          5
+        </button>
+        <button
+          onclick="appendToken('6')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          6
+        </button>
+        <button
+          onclick="appendToken('*')"
+          class="calc-button bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 py-4 rounded-2xl text-xl"
+        >
+          ×
+        </button>
+
+        <!-- Row 4 -->
+        <button
+          onclick="appendToken('1')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          1
+        </button>
+        <button
+          onclick="appendToken('2')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          2
+        </button>
+        <button
+          onclick="appendToken('3')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          3
+        </button>
+        <button
+          onclick="appendToken('-')"
+          class="calc-button bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 py-4 rounded-2xl text-xl"
+        >
+          −
+        </button>
+
+        <!-- Row 5 -->
+        <button
+          onclick="appendToken('0')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          0
+        </button>
+        <button
+          onclick="appendToken('.')"
+          class="calc-button bg-white/5 hover:bg-white/10 text-white py-4 rounded-2xl text-xl"
+        >
+          .
+        </button>
+        <button
+          onclick="performCalculation()"
+          class="calc-button bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 py-4 rounded-2xl text-xl"
+        >
+          =
+        </button>
+        <button
+          onclick="appendToken('+')"
+          class="calc-button bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 py-4 rounded-2xl text-xl"
+        >
+          +
+        </button>
+      </div>
+
+      <div id="status" class="text-center text-xs text-slate-500">
+        You can type directly or use the buttons
+      </div>
+    </div>
+
+    <script type="module">
+      import { calculate } from "https://esm.sh/gh/gameroman/math-parser";
+
+      const mainDisplay = document.getElementById("main-display");
+      const historyDisplay = document.getElementById("history-display");
+      const statusText = document.getElementById("status");
+
+      let isResultShown = false;
+
+      // Sync local expression with input value
+      const getExpression = () =>
+        mainDisplay.value === "0" ? "" : mainDisplay.value;
+
+      window.appendToken = (token) => {
+        let current = mainDisplay.value;
+
+        if (isResultShown) {
+          if (!isNaN(token) || token === "(") {
+            mainDisplay.value = token;
+          } else {
+            mainDisplay.value = current + token;
+          }
+          isResultShown = false;
+        } else {
+          if (current === "0") {
+            mainDisplay.value = token;
+          } else {
+            mainDisplay.value += token;
+          }
+        }
+        mainDisplay.focus();
+        updateStatus("Typing...");
+      };
+
+      window.clearAll = () => {
+        mainDisplay.value = "0";
+        historyDisplay.innerText = "";
+        updateStatus("Ready to compute");
+        isResultShown = false;
+        mainDisplay.focus();
+      };
+
+      window.performCalculation = () => {
+        const exp = mainDisplay.value;
+        if (!exp || exp === "0") return;
+
+        try {
+          const result = calculate(exp);
+          historyDisplay.innerText = exp + " =";
+          mainDisplay.value = result;
+          isResultShown = true;
+          updateStatus("Calculated successfully", false);
+        } catch (error) {
+          updateStatus("Invalid Expression", true);
+          console.error("Math Parser Error:", error);
+        }
+      };
+
+      function updateStatus(msg, isError = false) {
+        statusText.innerText = msg;
+        if (isError) {
+          statusText.className = "text-center text-xs text-rose-400";
+        } else {
+          statusText.className = "text-center text-xs text-slate-500";
+        }
+      }
+
+      // Handle direct typing
+      mainDisplay.addEventListener("input", (e) => {
+        if (isResultShown) isResultShown = false;
+        updateStatus("Typing...");
+      });
+
+      // Handle Enter key for calculation
+      mainDisplay.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          performCalculation();
+        }
+      });
+
+      // Prevent "0" from sticking around when first typing
+      mainDisplay.addEventListener("focus", () => {
+        if (mainDisplay.value === "0") {
+          mainDisplay.setSelectionRange(0, 1);
+        }
+      });
+
+      // Initialize focus
+      mainDisplay.focus();
+    </script>
+  </body>
+</html>
