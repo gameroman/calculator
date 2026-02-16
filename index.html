@@ -201,8 +201,9 @@
           } catch (err) {
             if (err instanceof Error) {
               statusText.innerText = err.message;
+            } else {
+              statusText.innerText = "Unknown error";
             }
-            statusText.innerText = "Error";
           }
         }, 10);
       };
