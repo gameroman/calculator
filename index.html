@@ -71,13 +71,30 @@
         font-style: italic;
         font-size: 0.875rem;
       }
+
+      .toggle-checkbox:checked {
+        right: 0;
+        border-color: #10b981;
+      }
+      .toggle-checkbox:checked + .toggle-label {
+        background-color: #064e3b;
+      }
     </style>
   </head>
   <body class="p-4">
     <div class="glass w-full max-w-lg rounded-2xl p-6 flex flex-col gap-4 overflow-hidden">
       <div class="flex justify-between items-center mb-2">
         <span class="text-xs font-bold text-slate-500 tracking-widest uppercase">Calculator</span>
-        <div class="flex gap-2">
+        <div class="flex items-center gap-4">
+          <label class="flex items-center cursor-pointer gap-2">
+            <span class="text-[10px] text-slate-400 uppercase tracking-tighter">Precise</span>
+            <div class="relative">
+              <input type="checkbox" id="precise-toggle" class="sr-only peer">
+              <div class="w-7 h-4 bg-slate-700 rounded-full peer peer-checked:bg-emerald-600 transition-colors"></div>
+              <div class="absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition-transform peer-checked:translate-x-3"></div>
+            </div>
+          </label>
+
           <button onclick="copyResult()" class="text-[10px] text-slate-400 hover:text-white border border-slate-700 px-2 py-1 rounded">
             COPY
           </button>
@@ -139,6 +156,7 @@
       const mainDisplay = document.getElementById("main-display");
       const historyDisplay = document.getElementById("history-display");
       const statusText = document.getElementById("status");
+      const preciseToggle = document.getElementById("precise-toggle");
 
       let isResultShown = false;
       let expression = ""; 
@@ -187,7 +205,10 @@
         setTimeout(() => {
           try {
             const start = performance.now();
-            const result = calculate(exp);
+            
+            const options = preciseToggle.checked ? { format: 'precise' } : {};
+            const result = calculate(exp, options);
+            
             const end = performance.now();
 
             historyDisplay.innerText = exp.length > MAX_LENGTH_THRESHOLD
